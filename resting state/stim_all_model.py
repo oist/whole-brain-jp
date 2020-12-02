@@ -140,14 +140,14 @@ def main():
             detectors[layer_name] = nest_routine.layer_spike_detector(cb_layers_M1[layer_name], layer_name, sim_params['initial_ignore'])
     if sim_regions['TH_S1']:
         for layer_name in th_layers['TH_S1_EZ'].keys():
-            detectors['TH_S1_EZ' + '_' + layer_name] = nest_routine.layer_spike_detector(th_layers['TH_S1_EZ'][layer_name], 'TH_S1_EZ_'+layer_name, sim_params['initial_ignore'])
+            detectors['TH_S1_EZ_' + layer_name] = nest_routine.layer_spike_detector(th_layers['TH_S1_EZ'][layer_name], 'TH_S1_EZ_'+layer_name, sim_params['initial_ignore'])
         for layer_name in th_layers['TH_S1_IZ'].keys():
-            detectors['TH_S1_IZ' + '_' + layer_name] = nest_routine.layer_spike_detector(th_layers['TH_S1_IZ'][layer_name], 'TH_S1_IZ_'+layer_name, sim_params['initial_ignore'])
+            detectors['TH_S1_IZ_' + layer_name] = nest_routine.layer_spike_detector(th_layers['TH_S1_IZ'][layer_name], 'TH_S1_IZ_'+layer_name, sim_params['initial_ignore'])
     if sim_regions['TH_M1']:
         for layer_name in th_layers['TH_M1_EZ'].keys():
-            detectors['TH_M1_EZ' + '_' + layer_name] = nest_routine.layer_spike_detector(th_layers['TH_M1_EZ'][layer_name], 'TH_M1_EZ_'+layer_name, sim_params['initial_ignore'])
+            detectors['TH_M1_EZ_' + layer_name] = nest_routine.layer_spike_detector(th_layers['TH_M1_EZ'][layer_name], 'TH_M1_EZ_'+layer_name, sim_params['initial_ignore'])
         for layer_name in th_layers['TH_M1_IZ'].keys():
-            detectors['TH_M1_IZ' + '_' + layer_name] = nest_routine.layer_spike_detector(th_layers['TH_M1_IZ'][layer_name], 'TH_M1_IZ_'+layer_name, sim_params['initial_ignore'])
+            detectors['TH_M1_IZ_' + layer_name] = nest_routine.layer_spike_detector(th_layers['TH_M1_IZ'][layer_name], 'TH_M1_IZ_'+layer_name, sim_params['initial_ignore'])
     print (sim_model_on)
     if sim_model_on=='resting_state':
         simulation_time = sim_params['simDuration']+sim_params['initial_ignore']
@@ -186,24 +186,24 @@ def main():
 
         if sim_regions['TH_S1']:
             for layer_name in th_layers['TH_S1_EZ'].keys():
-                rate = nest_routine.get_firing_rate_from_gdf_files(layer_name, detectors['TH_S1_EZ' + '_' + layer_name], sim_params['simDuration'],
+                rate = nest_routine.get_firing_rate_from_gdf_files('TH_S1_EZ_' + layer_name, detectors['TH_S1_EZ_' + layer_name], sim_params['simDuration'],
                                                nest_routine.count_layer(th_layers['TH_S1_EZ'][layer_name]))
-                print('Layer ' + 'TH_S1_EZ' + layer_name + " fires at " + str(rate) + " Hz")
+                print('Layer ' + 'TH_S1_EZ_' + layer_name + " fires at " + str(rate) + " Hz")
         if sim_regions['TH_S1']:
             for layer_name in th_layers['TH_S1_IZ'].keys():
-                rate = nest_routine.get_firing_rate_from_gdf_files(layer_name, detectors['TH_S1_IZ' + '_' + layer_name], sim_params['simDuration'],
+                rate = nest_routine.get_firing_rate_from_gdf_files('TH_S1_IZ_' + layer_name, detectors['TH_S1_IZ_' + layer_name], sim_params['simDuration'],
                                                nest_routine.count_layer(th_layers['TH_S1_IZ'][layer_name]))
-                print('Layer ' + 'TH_S1_IZ' + layer_name + " fires at " + str(rate) + " Hz")
+                print('Layer ' + 'TH_S1_IZ_' + layer_name + " fires at " + str(rate) + " Hz")
         if sim_regions['TH_M1']:
             for layer_name in th_layers['TH_M1_EZ'].keys():
-                rate = nest_routine.get_firing_rate_from_gdf_files(layer_name, detectors['TH_M1_EZ' + '_' + layer_name], sim_params['simDuration'],
+                rate = nest_routine.get_firing_rate_from_gdf_files('TH_M1_EZ_' + layer_name, detectors['TH_M1_EZ_' + layer_name], sim_params['simDuration'],
                                                nest_routine.count_layer(th_layers['TH_M1_EZ'][layer_name]))
-                print('Layer ' + 'TH_M1_EZ' + layer_name + " fires at " + str(rate) + " Hz")
+                print('Layer ' + 'TH_M1_EZ_' + layer_name + " fires at " + str(rate) + " Hz")
         if sim_regions['TH_M1']:
             for layer_name in th_layers['TH_M1_IZ'].keys():
-                rate = nest_routine.get_firing_rate_from_gdf_files(layer_name, detectors['TH_M1_IZ' + '_' + layer_name], sim_params['simDuration'],
+                rate = nest_routine.get_firing_rate_from_gdf_files('TH_M1_IZ_' + layer_name, detectors['TH_M1_IZ_' + layer_name], sim_params['simDuration'],
                                                nest_routine.count_layer(th_layers['TH_M1_IZ'][layer_name]))
-                print('Layer ' + 'TH_M1_IZ' + layer_name + " fires at " + str(rate) + " Hz")
+                print('Layer ' + 'TH_M1_IZ_' + layer_name + " fires at " + str(rate) + " Hz")
 
 
     else:
@@ -213,6 +213,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
