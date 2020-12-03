@@ -9,15 +9,15 @@ whole-brain model by OIST, RIKEN and UEC, Japan.
 
 ## Running the whole-brain:
 
-Previous to run a simulation, check that the folder ```log``` is empty. The ```gdf``` files containing the spikes of the different populations will be stored at ```log```.
+Previous to a simulation, check that the folder ```log``` is empty. The ```gdf``` files containing the spikes of the different populations will be stored at ```log```.
 
-This version can run on a desktop PC, we recommend at least using 10 threads for this simulation (the running time is 30 min. approximately for 1s of biological time simulation). Please check the file ```simParams.py``` for changing the main simulation settings:
+This version can run on a desktop PC, we recommend at least using 10 threads for this simulation (the running time is 30 min. approximately for 1s of biological time). Please check the file ```simParams.py``` for changing the main simulation settings:
 
 ```dt```: time bin (we recommend 0.1 ms)
 
-```nbcpu```: the number of threads (at leas 10).
+```nbcpu```: the number of threads (at least 10).
 
-```simDuration```:1500.0 ms (the simulation will add 500ms for initial settings, then it is needed at least 500ms for network stabilization. The last 1000.ms corresponds to resting state).
+```simDuration```: 1500.0 ms (the simulation will add 500ms for initial settings, then it is needed at least 500ms for network stabilization. The last 1000.ms corresponds to resting state).
 
 ```regions```: to activate/deactivate regions.
 
@@ -28,6 +28,12 @@ For running on HPC clusters, please include the command above within a job (i.e 
 
 ## Dependencies:
 NEST versions (2.16 ~ 2.20) 
+
+
+<p align="center">
+  <img width="300" src="https://github.com/oist/whole-brain-jp/blob/main/WB_diagram.png">
+</p>
+
 
 
 
