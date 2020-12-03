@@ -29,7 +29,7 @@ For running on HPC clusters, please include the command above within a job (i.e 
 ## Dependencies:
 NEST versions (2.16 ~ 2.20)
 
-Python version: 3.0
+Python version: 3.0 ~
 
 
 <p align="center">
@@ -37,7 +37,8 @@ Python version: 3.0
 </p>
 
 
-## If this work was use for your research, we ask kindly to refer our work. Thank you !.
+## Notes:
+If this work was used in your research, we ask kindly to refer our work. Thank you !.
 
 
 
