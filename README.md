@@ -27,6 +27,9 @@ To start a simulation run from command line:
 For running on HPC clusters, please include the command above within a job (i.e SLURM), and adjust ```nbcpu``` accordingly (you may change to 1 if any issue on HPC, and manage the computational resources directly from the job file).
 
 ## Dependencies:
+<<<<<<< HEAD
+NEST versions (2.16 ~ 2.20) Python version: 3.0
+=======
 NEST versions (2.16 ~ 2.20) 
 
 
@@ -41,3 +44,4 @@ NEST versions (2.16 ~ 2.20)
 
 
 
+>>>>>>> b427ccd3b64f2fcbe810dbf3ae129c806982a9ab
