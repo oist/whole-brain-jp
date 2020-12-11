@@ -236,7 +236,6 @@ bgParams =\
     },
     "num_neurons": 1000,
     "parrotCMPf": True,
-    "plastic_syn": False,
     "redundancyCMPfFSI": 3,
     "redundancyCMPfGPe": 3,
     "redundancyCMPfGPi": 3,

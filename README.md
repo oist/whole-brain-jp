@@ -32,10 +32,6 @@ NEST versions (2.16 ~ 2.20)
 Python version: 3.0 ~
 
 
-<p align="center">
-  <img width="300" src="https://github.com/oist/whole-brain-jp/blob/main/WB_diagram.png">
-</p>
-
 
 ## Notes:
 If this work was used in your research, we ask kindly to refer our work. Thank you !.

@@ -320,7 +320,6 @@ def instantiate_bg(bg_params, fake_inputs=False, ctx_inputs=None, scalefactor=[1
         tgt = connection[-3:]
         if src == 'CMP':
             src = 'CMPf'  
-        # if not fake_inputs, wire only in case of intra-BG connection
         if fake_inputs or src in ['MSN', 'FSI', 'STN', 'GPe', 'GPi']:
             if src in ['MSN', 'FSI', 'GPe', 'GPi']:
                 nType = 'in'

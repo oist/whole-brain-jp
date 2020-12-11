@@ -415,11 +415,11 @@ def add_poisson_generator(layer_gid, n_type, layer_name, ignore_time, region):  
                     ini_time_ini)})  # , 'label': layer_name})
                 nest.Connect(pre=PSG, post=nest.GetNodes(layer_gid)[0], syn_spec={'weight': 5.0, 'delay': 1.5})
 
-    elif region == 'TH':  ##added by Carlos amigo san.
+    elif region == 'TH': 
         if layer_name in [
             'TH_M1_IZ_thalamic_nucleus_TC']:  ## added to compensate the input from BG so TC gets resting state same as other TH populations
             PSG = nest.Create('poisson_generator', 1,
-                              params={'rate': 210.0, "start": float(ini_time_ini)})  # higher rate than others.
+                              params={'rate': 210.0, "start": float(ini_time_ini)})  
             nest.Connect(pre=PSG, post=nest.GetNodes(layer_gid)[0], syn_spec={'weight': 50.0, 'delay': 1.5})
         else:
             PSG = nest.Create('poisson_generator', 1, params={'rate': 20.0, "start": float(ini_time_ini)})
@@ -561,17 +561,9 @@ def create_neurons_cb():
 # BG #
 ######
 
-AMPASynapseCounter_bg = 0  # initialize global counter variable for AMPA/NMDA colocalization in BG (unfortunate design choice, but required by nest fast connect procedure)
-
+AMPASynapseCounter_bg = 0  # initialize global counter variable for AMPA/NMDA colocalization in BG (unfortunate design choice)
 
 # -------------------------------------------------------------------------------
-# Provides circular positions (check whether the position are within the layer dimensions beforehand !)
-#
-# nbCh: integer stating the number of channels to be created
-# c: distance to the center (small distance means more channels in competition)
-# r: radius of each channel (leading to larger overlap and thus broader competition)
-# -------------------------------------------------------------------------------
-# helper function that gives the channel center
 def circular_center(nbCh, c, Ch=None):
     # equi-distant points on a circle
     if Ch == None:
@@ -583,9 +575,7 @@ def circular_center(nbCh, c, Ch=None):
     return {'x': x, 'y': y}
 
 
-def circular_positions(nbCh, c, r, sim_pts, Ch=None):  # circular positions only work in scale [1,1]
-    # N_vp = nest.GetKernelStatus(['total_num_virtual_procs'])[0]
-    # pyrngs = [np.random.RandomState(123456)] # for s in ([123456]*N_vp)]
+def circular_positions(nbCh, c, r, sim_pts, Ch=None):  
     if Ch == None:
         Ch = range(nbCh)
     center_xy = circular_center(nbCh, c, Ch=Ch)
@@ -605,8 +595,6 @@ def hex_corner(center, size, i):
     return [center[0] + size * np.cos(angle_rad), center[1] + size * np.sin(angle_rad)]
 
 
-# define the centers that will connect ctx to bg, and store them at bg_params['circle_center']
-# centers must be within grid 2D dimensions.
 def get_channel_centers(bg_params, hex_center=[0, 0], ci=6, hex_radius=0.240):
     center_aux = []
     if bg_params['channels']:
@@ -621,24 +609,17 @@ def get_channel_centers(bg_params, hex_center=[0, 0], ci=6, hex_radius=0.240):
     return center_aux
 
 
-################################################################################################################################
-######### given columns mean firing rate, columns positions and current position, it infers (heuristically) the next positions 
-########## attention !: points_to_reach and mean_fr should be aligned !!!! ####################
-########### attention !: mean_fr of is sorted as channels R, C, L respectively (based on points_to_reach order -> centers[1:4])
-#############################################################################################################################
 def get_next_pos(points_to_reach, mean_fr, current_position=[0., 0.], delta_x=0.1):
-    xt = current_position  # x,y components between -0.5 and 0.5 (receptive field, this need to be scaled to map physical positions)
-    # normalize firing rates 
+    xt = current_position  
     a = mean_fr / sum(np.array(
-        mean_fr))  # normalization between 3 rates # also can be used -> mean_fr/np.array([150.]) normalize against a maximum allowed.
-    # calculate each of their delta_x contribution. x,y components.
+        mean_fr))  
     aa = a * delta_x
     xt1 = []
     for j, i in enumerate(points_to_reach):
         theta = math.degrees(math.atan((i[1] - xt[1]) / (i[0] - xt[0])))
         if theta < 0.:
             theta = 180. + theta
-        if xt[1] > i[1] and (j == 0 or j == 2):  # only will do this if the L and R are left behind
+        if xt[1] > i[1] and (j == 0 or j == 2):  
             theta = 180. + theta
         xt_i = [aa[j] * (math.cos(math.radians(theta))), aa[j] * (math.sin(math.radians(theta)))]
         xt_i[0] = xt_i[0] + xt[0]  # shift
@@ -693,11 +674,6 @@ def get_connections_to_file(source_name, target_name, source_layer, target_layer
 #                 -> this is useful for the cortical connections, as some inputs will be derived from L5A and L5B layers
 # -------------------------------------------------------------------------------
 def create_layers_bg(bg_params, nucleus, fake=0, mirror_neurons=None, mirror_pos=None, scalefactor=[1, 1]):
-    # N_vp = nest.GetKernelStatus(['total_num_virtual_procs'])[0]
-    # pyrngs = [np.random.RandomState(123456)]# for s in ([123456]*N_vp)]
-    # print('global pyrngs in create layers BG: ',pyrngs)
-
-    # define extent and center for 2D layer
     my_extent = [1. * int(scalefactor[0]) + 1., 1. * int(scalefactor[1]) + 1.]
     my_center = [0.0, 0.0]
 
@@ -709,17 +685,14 @@ def create_layers_bg(bg_params, nucleus, fake=0, mirror_neurons=None, mirror_pos
         else:
             pop_size = int(bg_params['nb' + nucleus])
     else:
-        # inputs come from existing ctx layer: only a fraction of poisson generators are created
         pop_size = int(bg_params['nb' + nucleus]) - len(mirror_neurons)
 
     print('population size for ' + nucleus + ': ' + str(pop_size))
 
     if nucleus == 'GPi_fake':
-        # get xy position from real GPi and add z value
         positions_z = pyrngs[0].uniform(0., 0.5, pop_size).tolist()
         positions = np.loadtxt('./log/' + nucleus[:3] + '.txt')  # retrive positions x,y from GPi
         position_nD = [[positions[i][1], positions[i][2], positions_z[i]] for i in range(len(positions))]
-        # define extent and center for 3D layer
         my_extent = my_extent + [1.]
         my_center = my_center + [0.]
         print('positions GPi_fake: ', position_nD[:10])
@@ -744,7 +717,6 @@ def create_layers_bg(bg_params, nucleus, fake=0, mirror_neurons=None, mirror_pos
         print('positions len for fake including mirrors: ', len(position_nD))
 
     if fake == 0:
-        # fake == 0 is the normal case, where actual iaf neurons are instantiated
         if nucleus == 'GPi_fake':
             element = 'parrot_neuron'
         else:
@@ -753,14 +725,12 @@ def create_layers_bg(bg_params, nucleus, fake=0, mirror_neurons=None, mirror_pos
             nest.SetDefaults('iaf_psc_alpha_multisynapse', {"I_e": bg_params['Ie' + nucleus]})
             element = 'iaf_psc_alpha_multisynapse'
     else:
-        # when fake > 0, parrot neurons instantiated
         element = 'parrot_neuron'
     layer_gid = ntop.CreateLayer(
         {'positions': position_nD, 'elements': element, 'extent': my_extent, 'center': my_center, 'edge_wrap': True})
     print(len(position_nD))
     save_layers_position(nucleus, layer_gid, np.array(position_nD))
     if fake > 0:
-        # when fake > 0, parrot neurons are connected to poisson generators firing at `fake`Hz
         my_post = list(nest.GetNodes(layer_gid)[0])
         my_post.sort()
 
@@ -775,7 +745,7 @@ def create_layers_bg(bg_params, nucleus, fake=0, mirror_neurons=None, mirror_pos
                 'special handling of ' + nucleus + ' input layer => the remaining neurons will be connected to the original ctx neurons')
             print('connecting mirror neurons of len: ', len(mirror_gids), ' to ', nucleus)
             nest.Connect(pre=mirror_gids, post=my_post[-len(mirror_gids):], conn_spec={'rule': 'one_to_one'},
-                         syn_spec={'delay': 10.})  ## added delay !!!!
+                         syn_spec={'delay': 10.}) 
 
     return layer_gid
 
@@ -805,14 +775,11 @@ def connect_layers_bg(bg_params, nType, bg_layers, nameSrc, nameTgt, projType, r
     recType = {'AMPA': 1, 'NMDA': 2, 'GABA': 3}
 
     if RedundancyType == 'inDegreeAbs':
-        # inDegree is already provided in the right form
         inDegree = float(redundancy)
     elif RedundancyType == 'outDegreeAbs':
-        #### fractional outDegree is expressed as a fraction of max axo-dendritic contacts
         inDegree = get_frac_bg(bg_params, 1. / redundancy, nameSrc, nameTgt, bg_params['count' + nameSrc],
                                bg_params['count' + nameTgt], verbose=verbose)
     elif RedundancyType == 'outDegreeCons':
-        #### fractional outDegree is expressed as a ratio of min/max axo-dendritic contacts
         inDegree = get_frac_bg(bg_params, redundancy, nameSrc, nameTgt, bg_params['count' + nameSrc],
                                bg_params['count' + nameTgt], useMin=True, verbose=verbose)
     else:
@@ -873,7 +840,6 @@ def connect_layers_bg(bg_params, nType, bg_layers, nameSrc, nameTgt, projType, r
                         stochastic_delays=stochastic_delays, verbose=verbose)
 
     if nType == 'ex':
-        # mirror the AMPA connection with similarly connected NMDA connections
         src_idx = 0
         mass_mirror_bg(bg_params, nameSrc, nameTgt, nest.GetNodes(bg_layers[nameSrc])[src_idx], lbl, recType['NMDA'],
                        W['NMDA'], delay, stochastic_delays=stochastic_delays)
@@ -1040,11 +1006,9 @@ def get_input_range_bg(bg_params, nameSrc, nameTgt, cntSrc, cntTgt, verbose=Fals
 ####################
 
 # -------------------------------------------------------------------------------
-# If bgparams['channel'] is False it will
+# It will
 # identify randomly a pool of ctx neurons to project to bg
 # (numb_neurons (bgparams['num_neurons']) are selected from l5a and l5b)
-# if bgparams['channel'] (channels) is True it will select circular clusters with a
-# of radius equal to radius_small for each center circle_center;
 #
 # -------------------------------------------------------------------------------
 
@@ -1059,10 +1023,10 @@ def identify_proj_neurons_ctx_bg_last(source_layer, params, numb_neurons, area_l
             circles_l5b_l5a = get_input_column_layers_ctx(source_layer, circle_center, channels_radius,
                                                           'M1')  # A list with centers is sent as param
             my_PTN, my_CSN = [], []
-            for i in circles_l5b_l5a[0]:  # l5b circles. iterate over circles
+            for i in circles_l5b_l5a[0]:  
                 for j in i:
                     my_PTN.append([j[0], j[1][:2]])  # use only x and y positions in PTN
-            for i in circles_l5b_l5a[1]:  # l5a circles. iterate over circles
+            for i in circles_l5b_l5a[1]:  
                 for j in i:
                     my_CSN.append([j[0], j[1][:2]])  # use only x and y positions in CSN
         else:
@@ -1101,10 +1065,10 @@ def identify_proj_neurons_ctx_bg_last(source_layer, params, numb_neurons, area_l
             circles_l5b_l5a = get_input_column_layers_ctx(source_layer, circle_center, channels_radius,
                                                           'S1')  # A list with centers is sent as param
             my_PTN, my_CSN = [], []
-            for i in circles_l5b_l5a[0]:  # l5b circles. iterate over circles
+            for i in circles_l5b_l5a[0]:  
                 for j in i:
                     my_PTN.append([j[0], j[1][:2]])  # use only x and y positions in PTN
-            for i in circles_l5b_l5a[1]:  # l5a circles. iterate over circles
+            for i in circles_l5b_l5a[1]:  
                 for j in i:
                     my_CSN.append([j[0], j[1][:2]])  # use only x and y positions in CSN
         else:
@@ -1144,7 +1108,6 @@ def identify_proj_neurons_ctx_bg_last(source_layer, params, numb_neurons, area_l
 # Connect the ctx neurons of the chosen subset to the basal ganglia
 # -------------------------------------------------------------------------------
 def connect_ctx_bg(ctx_neurons_gid, bg_layer_gid):
-    # import ipdb; ipdb.set_trace()
     nest.Connect(pre=ctx_neurons_gid, post=nest.GetNodes(bg_layer_gid)[0][-len(ctx_neurons_gid):],
                  conn_spec={'rule': 'one_to_one'})
 
@@ -1174,7 +1137,6 @@ def connect_inter_regions(pre_region_name, post_region_name, conn_params, wb_lay
 
 
 #### fix to mitigate edge effect #####
-
 def reduce_weights_at_edges(pre_pos_file_name,post_pos_file_name,pre_pop,post_pop,margin=0.025,new_weight=0.):
 ### get target and source nodes, and positions of sources
     pre_l_nodes=nest.GetNodes(pre_pop)[0]

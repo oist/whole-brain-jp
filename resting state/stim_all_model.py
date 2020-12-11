@@ -54,10 +54,10 @@ def main():
         wb_layers = dict(wb_layers, **cb_layers_M1)
 
     if sim_regions['BG']:
-        if sim_params['channels']: #if True
-            bg_params['channels'] = True #for channels input tasks
+        if sim_params['channels']:
+            bg_params['channels'] = True 
         else:
-            bg_params['channels'] = False #resting state
+            bg_params['channels'] = False 
         bg_params['circle_center'] = nest_routine.get_channel_centers(sim_params, hex_center=[0, 0],
                                                                 ci=sim_params['channels_nb'],
                                                                 hex_radius=sim_params['hex_radius'])
